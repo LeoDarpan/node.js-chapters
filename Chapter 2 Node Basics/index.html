@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style/style.css">
+    <link rel="stylesheet" href="assets/style/prism.css">
+    <title>Node.js Intro</title>
+</head>
+<body>
+    <section class="main">
+        <div class="lesson-heading">
+            <div class="ch-no"> Chapter 2 </div>
+            <div class="ch-name"> Node.js Basics </div>
+        </div>
+        <div class="lesson">
+            <h1>
+                Basics of Node.js
+            </h1>
+            <ul>
+                <li>
+                    The Global Object
+                    <ul>
+                        <li>Window is the global object by default in javascript</li>
+                        <li>Its presence is implied everywhere</li>
+                        <li>Similarly, Node has a global object which doesn't need to be referenced everywhere</li>
+                        <li>It takes all the events and functions and works just like a window at the backend</li>
+                        <li>Node doesn't have to interact with the elements on the page at the backend</li>
+                    </ul>
+                </li>
+                <li>
+                    Modules and Require
+                    <ul>
+                        <li>Modules can contain different pieces of a big code divided for convenience.</li>
+                        <li>"require" statement can import one file into another</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const xyz = require("./people");
+    </code>
+</pre>
+                        <li>The code above imports file names people into another file where the statement is written.</li>
+                        <li>The require statement always returns an empty object.</li>
+                        <li>The data inside the people file cannot be readily accessed.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        people = ['Goku', 'Gohan', 'Vegeta'];
+        module.exports = people;
+    </code>
+</pre>
+                        <li>The code above is written in the file being imported and now it returns an array through "module.exports" statement</li>
+                        <li>Module.exports can also export an object of different arrays as shown below.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        people = ["Goku", "Gohan", "Vegeta"];
+        powers = [10,00,000, 7,00,000, 9,00,000];
+        
+        module.exports = {
+            people, powers
+        };
+    </code>
+</pre>
+                        <li>There is no need to write the keys separately if the names are gonna be the same as shown</li>
+                        <li>The following code outputs the same data on a different file with the help of the following code.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const xyz = require("./people");
+
+        console.log(xyz.people, xyz.powers);
+    </code>
+</pre>
+                        <li>The same code can be written like this also,</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const {people, powers} = require("./people");
+
+        console.log(people, powers);
+    </code>
+</pre>
+                         <li>Node.js can also access os object, which is the object with a lot of information about the operating system it is running on.</li>
+                    </ul>
+                </li>
+                <li>
+                    The File system
+                    <ul>
+                        <li>Node.js can do all the crud operations on files.</li>
+                        <li>The module required for the operations is fs</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const fs = require("fs");
+    </code>
+</pre>
+                        <li>To read files, the following statement is used:</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        fs.readFile("../../docs/hi.txt", (err, data) => {
+            if(err){
+                console.log(err);
+            }
+            console.log(data);
+        });
+    </code>
+</pre>
+                        <li>"readfile" is an async function and returns a promise.</li>
+                        <li>In the code above, once "readfile" is done with its job, it fires the callback function with either err or data.</li>
+                        <li>The statement returns a buffer and to see the data, we can convert it into a string using the funciton toString().</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        console.log(data.toString());
+    </code>
+</pre>
+                        <li>Writing into files is also very easy. Except readFile, we read writeFile</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        fs.writeFile("../../docs/hi.txt", "Hi there!", () => {
+            console.log("File written successfully!");
+        });
+
+    </code>
+</pre>
+                        <li>If writing in a file which doesn't exist, it will  be created and written successfully!</li>
+                        <li>For making a directory, mkdir is to be used and rmdir deletes the directory.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        if(!fs.existsSync("../../new"){
+            fs.mkdir("../../new", (err) => {
+                if(err){
+                    console.log(err);
+                }
+                console.log("Folder created!");
+            });
+        }else{
+            fs.rmdir("../../new", (err) => {
+                if(err){
+                    console.log(err);
+                }
+                console.log("Folder removed");
+            });
+        }
+    </code>
+</pre>
+                        <li>Deleting files is also very easy. Just use "unlink" function and the file will vanish.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        if(!fs.existsSync("../../new/deleteme.txt")){
+            fs.unlink("../../new/deleteme.txt", (err) => {
+                if(err){
+                    console.log(err);
+                }
+                console.log("File deleted successfully");
+            });
+        }
+    </code>
+</pre>
+                    </ul>
+                </li>
+                <li>
+                    Streams and Buffers
+                    <ul>
+                        <li>lets data to be used just as it is received in pieces. Just like videos buffering on the internet.</li>
+                        <li>There are mainly two types of streams, read and write.</li>
+                        <li>createReadStream is the command that is used for making a read stream from a source and the encoding method as a second argument.</li>
+                        <li>createWriteStream is the one responsible for making a write stream to a source.</li>
+                        <li>The code for both goes as follows</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const fs = require("fs");
+        const utf8 = 'utf8';
+
+        const readStream = fs.createReadStream("../../docs/heavydata.txt", {encoding: utf8});
+        const writeStream = fs.createWriteStream("../../docs/newdata.txt");
+
+        readStream.on('data', (chunk) => {
+            console.log("\n---------New Chunk-------------\n");
+            console.log(chunk);
+
+            writeStream.write('\n--------New Chunk-------------\n');
+            writeStream.write(chunk);
+        });
+    </code>
+</pre>
+                        <li>To make matters even easier, the concept of piping was created. It creates a pipe from a read stream to a write stream as shown.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const fs = require("fs");
+
+        const readStream = fs.createReadStream("../../docs/heavydata.txt", {encoding: "utf8"});
+        const writeStream = fs.createWriteStream("../../newdata.txt");
+
+        readStream.pipe(writeStream);
+
+    </code>
+
+</pre>
+                    </ul>
+                </li>
+                <li>Revising the access to parent directory again:
+                    <ul>
+                        <li>./ - Same directory</li>
+                        <li>../ - Parent directory</li>
+                        <li>../../ - Grandparent directory</li>
+                        <li>../../../ - Great Grandparent directory</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <script src="assets/script/script.js"></script>
+    <script src="assets/script/prism.js"></script>
+</body>
+</html>

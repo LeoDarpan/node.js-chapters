@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style/style.css">
+    <link rel="stylesheet" href="assets/style/prism.css">
+    <title>Express</title>
+</head>
+<body>
+    <section class="main">
+        <div class="lesson-heading">
+            <div class="ch-no"> Chapter 6 </div>
+            <div class="ch-name"> Express Apps</div>
+        </div>
+        <div class="lesson">
+            <h1>
+                Express
+            </h1>
+            <ul>
+                <li>Express is a framework that let's developers handle all the server side logic in a much more elegant way.</li>
+                <li>It helps write the code in a much easier and clearner way.</li>
+                <li>It can be installed using npm.</li>
+                <li>It will be added to the dependencies in the package.json file.</li>
+                <li>It is installed particularly for the app which is being built and globally.</li>
+                <li>Next step is to create an express app.</li>
+                <li>To create an app, a new file is created which is typically named as app.js</li>
+                <li>The firstest thing to do in the app making is to require the package.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const express = require("express");
+    </code>
+</pre>
+                <li>To initiate the app, we just need to name it and invoke the express method.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const express = require("express");
+   
+        //Initiate the app
+        const app = express();
+    </code>
+</pre>
+                <li>Next thing to do is to listen to requests.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const express = require("express");
+        
+        //Initiate the app
+        const app = express();
+
+        app.listen(3000);
+    </code>
+</pre>  
+                <li>This invokes a server object too and there is no need to specify localhost in this case. The server object can be assigned to a variable also but its not commonly required.</li>
+                <li>This finishes the setup of the app and the next thing to do is set responses.</li>
+                <li>Different handler functions can be invoked for different type of requests.</li>
+                <li>Every method has two parameters, the first one being the url and the second one being the callback function specifying the res and request.</li>
+                <li>Express offers a new method called send(), which takes care of setting headers as per the content automatically and status codes in the responses, so we don't need to do it manually anymore.</li>
+                <li>The following lines of code return the little piece of html on getting the request.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const express = require("express");
+        
+        //Initiate the app
+        const app = express();
+
+        app.listen(3000);
+
+        app.get("/", (req, res) => {
+            res.send('<p> Hello Express App!</p>');
+        });
+    </code>
+</pre>                
+                <li>The next thing to do is to send back html pages and not some little strings.</li>
+                <li>To handle different get requests, we need to make get handler functions just like above for each one that we want to incorporate.</li>     
+<pre class="language-js">
+    <code class="line-numbers">
+        const express = require("express");
+
+        //Initiate the app
+        const app = express();
+
+        app.listen(3000);
+
+        app.get("/", (req, res) => {
+            res.send("<p>Home Page</p>");
+        });
+
+        app.get("/about", (req, res) => {
+            res.send("<p>About Page</p>");
+        });
+    </code>
+</pre>
+                <li>The best way to send html is through files and not strings.</li>
+                <li>So we can create as many pages as we want in our app and then send them through express when requested.</li>
+                <li>To send files, there is a simple method available with express called sendFile.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const express = require("express");
+
+        //Initiate the app
+        const app = express();
+
+        app.listen(3000);
+
+        app.get("/", (req, res) => {
+            //res.send("<p>Home page</p>");
+            res.sendFile("../../index.html", {root : __dirname});
+        });
+
+        app.get("/about", (req, res) => {
+            //res.send("<p>About page</p>");
+            res.sendFile("../../about.html", {root : __dirname});
+
+        });
+    </code>
+</pre>
+                <li>Although being a very good method, there is a slight problem with it. It takes a second parameter as the root path to help express establisht the absolute path to the file that is being sent.</li>
+                <li>The second parameter is an object specifying the root directory.</li>
+                <li>It can be quite cumbersome to send files via express. There are two best methods as the above shown technique doesn't work.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        app.get("/", (req, res) => {
+            res.sendFile(path.resolve(../../index.html));
+        });
+
+        app.get("/about", (req, res) => {
+            res.sendFile(path.resolve(../../about.html));
+        });
+
+        //-------Another method----------
+
+        app.get("/", (req, res) => {
+            res.sendFile(path.join(__dirname, "../../index.html"));
+        });
+        
+        app.get("/about", (req, res) => {
+            res.sendFile(path.join(__dirname, "../../about.html"));
+        });
+        
+        //---------Third and the most convenient way, as per the Express documentation---------
+        app.get("/", (req, res) => {
+            // res.send('<p>Home Page</p>');
+            res.sendFile("index.html", {root: "../../"});
+        });
+        
+        app.get("/about", (req, res) => {
+            // res.send("<p>About Page</p>");
+            res.sendFile("about.html", {root: "../../"});
+        });
+
+        //This one is what I am gonna use for future projects!
+    </code>
+</pre>
+                <li>As compared to node.js, redirecting in express is fairly easy with the redirect method as shown.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const express = require("express");
+        const path = require("path");
+
+        //Init app
+        const app = express();
+
+        app.listen(3000);
+
+        app.get("/", (req, res) => {
+            res.sendFile("home.html", {root: "../../"});
+        });
+
+        app.get("/about", (req, res) => {
+            res.sendFile("about.html", {root: "../../"});
+        });
+
+        app.get("/about-me", (req, res) => {
+            res.redirect("/about");
+        });
+    </code>
+</pre>
+                <li>To fire the 404 error in express, a method called "use" is used which fires middleware functions when prompted.</li>
+                <li>It is fired when the request url doesn't match with any other url in the code.</li>
+                <li>Normally, express reads the file from top to bottom and whenever there is a match with a url, it doesn't go any furhter.</li>
+                <li>Therefore, "use" is always placed at the bottom of the code to make sure that when there is no other match, express fires use as if it is placed above then express would not look any further for urls after reaching it.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        app.use((req, res) => {
+            res.status(404).sendFile("404.html", {root: "../../"});
+        });
+    </code>
+</pre>
+                <li>Another important thing to note here is that it does not set the statuscode by itself, so an extra method is appended to do it manually as can be seen above.</li>
+                <li>Comparing this code with that of node.js, it can be easily seen that it is much less complex and more readable.</li>
+            </ul>
+        </div>
+    </section>
+
+    <script src="assets/script/script.js"></script>
+    <script src="assets/script/prism.js"></script>
+</body>
+</html>

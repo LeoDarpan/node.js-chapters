@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style/style.css">
+    <link rel="stylesheet" href="assets/style/prism.css">
+    <title>View Engines</title>
+</head>
+<body>
+    <section class="main">
+        <div class="lesson-heading">
+            <div class="ch-no"> Chapter 7 </div>
+            <div class="ch-name"> View Engines</div>
+        </div>
+        <div class="lesson">
+            <h1>
+                EJS - Express Javascript 
+            </h1>
+            <ul>
+                <li>Another massive advantage of using Express is that it allows addition of dynamic content on websites.</li>
+                <li>View engines do the trick.</li>
+                <li>The simplest of them all is EJS - Express Javascript.</li>
+                <li>It uses plain JS with simple syntax and speedy execution.</li>
+                <li>NPM can be used to install EJS.</li>
+                <li>To register the app with EJS, we need to write a command just after creating the app.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const express = require("express");
+
+        const app = express();
+
+        //Register View Engine
+        app.set("view engine", "ejs");
+    </code>
+</pre>  
+                <li>That's it, now this app would use a view engine and look for views in the same directory.</li>              
+                <li>Views can be stored in some custom directories too and specified in the code.</li>
+                <li>Views are files where all the code for pages is written instead of HTML pages.</li>
+                <li>These views shape up the app/website.</li>
+                <li>How to use views?? Instead of sending files on requests, views are rendered through ejs very easily.</li>
+                <li>Views should be placed in a folder with the same name and in the same directory as app.js.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const express = require("express");
+
+        const app = express();
+
+        //Register View Engine
+        app.set("view engine", "ejs");
+
+        app.listen(3000);
+
+        app.get("/", (req, res) => {
+            res.render("index");
+        });
+
+        app.get("/about", (req, res) => {
+            res.render("about");
+        });
+        
+        app.get("/blogs/create", (req, res) => {
+            res.render("create");
+        });
+        
+        app.use((req, res) => {
+            res.status(404).render("404");
+        });
+        
+    </code>
+</pre>           
+                <li>This is how easy it is. No need to use sendFile and specify root again as it itself looks into the views directory and renders the view.</li>
+                <li>Next thing is to witness the true power of EJS by passing dynamic data into thees views seamlessly.</li>
+                <li>To pass the dynamic stuff, EJS tags are used.</li>
+                <li>EJS code is encapsulated in a tags just like PHP code.</li>
+                <li>"<% EJS Code %>"</li>
+                <li>This tag can be placed anywhere in the html body and can be used to add data to the page dynamically.</li>
+                <li>The data is usually exchanged between a database and the view, it can also be traded between app.js and any view.</li>
+                <li>Render method can pass data dynamically through an object which acts as its second parameter.</li>
+                <li>To access the data, the tags have an equal to symbol ensuing the first percentage symbol as - <%= variable/key %></li>
+                <li>In the following code snippets, an object containing data is being passed through render on index.ejs and the view is accessing it dynamically.</li>         
+                <li>Express side snippet of app.js:</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        app.get("/", (req, res) => {
+            app.render("index", {title: "Home"});
+        });
+    </code>
+</pre>     
+                <li>HTML code snippet;</li>
+<pre class="language-html">
+    <code class="line-numbers">
+        <title>My blog <%= title%></title>
+    </code>
+</pre>           
+                <li>This is how the view will access the object, just by writing the key of the value.</li>
+                <li>Not just small values, EJS can be used to pass through whole lot of huge chunks of data such as blogs.</li>
+                <li>It can cycle through arrays or array of objects to add content dynamically.</li>
+                <li>Express side snippet of app.js:</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        app.get("/", (req, res) => {
+            const blogs = [
+            {title: "Blog number one", snippet:"Lorem ipsum dolor sit amet consectetur adipisicing elit."},
+            {title: "Blog number two", snippet:"Lorem ipsum dolor sit amet consectetur adipisicing elit."},
+            {title: "Blog number three", snippet:"Lorem ipsum dolor sit amet consectetur adipisicing elit."}
+            ];
+            app.render("index", {title: "Home", blogs});
+        });
+    </code>
+</pre> 
+                <li>HTML code snippet;</li>
+<pre class="language-html">
+    <code class="line-numbers">
+        <% if(blogs.length > 0) { %>
+            <% blogs.foreach(blog => { %>
+                <h1 class="title"><%= blog.title %></h1>
+                <p class="snippet"><%= blog.snippet %></p>
+            <% )}; %>
+        <% }else{ %>
+            <p>There are no blogs to display yet...</p>
+        <% } %>
+    </code>
+</pre>           
+                <li>This is called server side rendering of html pages as the view files, which contain all the logic and variables, is passed through a view engine which looks for any type of dynamic content, variables, loops, conditionals etcetera.  </li>
+                <li>At the end it figures out all the valid html code for it and sends it to the browser to display on the page.</li>
+                <li>
+                    Partials - 
+                    <ul>
+                        <li>Many times, several views have some part of code that is identical.</li>
+                        <li>Whenever some modifications are made, it has to be done for each view individually.</li>
+                        <li>Express and EJS allow us to handle it smoothly with the help of Partials.</li>
+                        <li>Partials contain the part of the code which is identically shared between each view.</li>
+                        <li>Partials can be imported into the views and can handle the implimentation of modifications all over.</li>
+                        <li>Partial is basically that part of the template that can be reused.
+                        <li>To park it, a new folder is made into the views folder and all the files are made there.</li>
+                        <li>Mostly there are some parts of the code which are commonly reused, such as, Header, Nav and Footer.</li>
+                        <li>Files can be made for each part separately.</li>
+                        <li>Partials are inlcuded using the inlcude funciton.</li>
+                        <li class="highlight">"<%- include("./partials/example.ejs") %>"</li>
+                        <li>The above command is used to import partials, in this case "-" is used instead of '=' as the latter converts the enclosed value into string and not html</li>
+                    </ul>
+                </li>
+                <li>
+                    Next important thing is to import CSS into node projects.
+                    <ul>
+                        <li>For now the only way to do it is to use the style tag in the head part of the body.</li>
+                        <li>To import static files like CSS and images, middleware is used which is covered in the next chapter.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <script src="assets/script/script.js"></script>
+    <script src="assets/script/prism.js"></script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style/style.css">
+    <link rel="stylesheet" href="assets/style/prism.css">
+    <title>MongoDB | Mongoose</title>
+</head>
+<body>
+    <section class="main">
+        <div class="lesson-heading">
+            <div class="ch-no"> Chapter 9 </div>
+            <div class="ch-name"> MongoDB </div>
+        </div>
+        <div class="lesson">
+            <h1>
+                MongoDB
+            </h1>
+            <ul>
+                <li>Mongo DB is a non SQL databasse.</li>
+                <li>It doesn't store data in the form of tables.</li>
+                <li>It stores records in the form of documents.</li>
+                <li>The documents can be of any type: User, blog, author et cetera.</li>
+                <li>One DB can store only one type of documents.</li>
+                <li>Every document represents a single record.</li>
+                <li>The documents store data in the form of JS objects or JSON.</li>
+                <li>All the data is in the form of key value pair.</li>
+                <li>It also generates an ID for each document automatically.</li>
+                <li>
+                    How to use:
+                    <ul>
+                        <li>It can be installed locally or</li>
+                        <li>It offers a cloud service as well which is very easy to maintain.</li>
+                        <li>MongoDB Atlas is the service that let's developers make online collections of documents to work on websites.</li>
+                        <li>MongoDB stores databases in the form of a cluster.</li>
+                        <li>In the cluster a database can be created which is a collection of documents.</li>
+                        <li>
+                            Important steps to perform while making a DB in Mongo:
+                            <ol>
+                                <li>Go to the cluster.</li>
+                                <li>Click on Browse collections</li>
+                                <li>Then create a collection.</li>
+                                <li>Click on Add my own data button and give name to the database and the collection.</li>
+                                <li>Next, we need to create a user that can access the DB from the app code.</li>
+                                <li>For that go to Database access and add a user with a password.</li>
+                                <li>This makes sure that not just anyone is messing with the database.</li>
+                                <li>Only the users which have access to the DB can do the crud on the same.</li>
+                            </ol>
+                            </li>
+                            <li>To connect the DB to the app, we can go to Connect in the databases section and select the option to connect it to our app with the link.</li>
+                            <li>The link is placed in the app, can be stored in a variable.</li>
+                            <li>The connection setup and the handling of requests is taken care by Mongoose.</li>
+                            <li>Mongoose wraps MongoDb into models.</li>
+                            <li>Mongoose is an Object Document Mapping library.</li>
+                            <li>
+                                Two models exist basically
+                                <ul>
+                                    <li>User model</li>
+                                    <li>Blog model</li>
+                                </ul>
+                            </li>
+                            <li>Both these models allow CRUD to be done.</li>
+                            <li>Mongo DB or Mongoose both work with Schemas which define the structure of a type of data or a document.</li>
+                            <li>It tells all the properties that the model has.</li>
+                            <li>For example, User Schema would have properties like, name(string), age(number), bio(string) and Blog schema would have props like title(string), snippet(string), body(string) etcetera.</li>
+                            <li>Next thing is to make a model which allows the developers to communicate with the schemas.</li>
+                            <li>Mongoose can be installed in the app using NPM.</li>
+                            <li>Connecting app to the database through Mongoose involves following lines code.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        // Adding Mongoose
+        const mongoose = require("mongoose");
+
+        //connect to MongoDB
+        const dbUrl = "mongodb+srv://user1:test1234@nodepracticeproject.lrmbi.mongodb.net/node-blogging?retryWrites=true&w=majority";
+
+        mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true});//Async task so then can be appended.
+        .then((result) => console.log("Connected to DB"))
+        .catch((err) => console.log(err));
+    </code>
+</pre>
+                            <li>The connect method usually shows deprecation warning as its deprecated so an object argument is also associated to avoid that.</li>
+                            <li>The request listening should not start until a connection is established so the listening method can be invoked in the then part of the connection phase as shown below.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true});//Async task so then can be appended.
+        .then((result) => app.listen(3000)
+        .catch((err) => console.log(err));
+    </code>
+</pre>                          
+                            <li>Next thing to do is to create a model for the schema.</li>
+                            <li>It can be created in a separate folder.</li>
+                            <li>It will also run on Mongoose, inlcuding the schema as shown.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const mongoose = require("mongoose");
+        const Schema = mongoose.Schema;
+
+        const blogSchema = new Schema({
+            title: {
+                type: String,
+                required: true 
+            },
+            snippet: {
+                type: String,
+                required: true
+            },
+            body: {
+                type: String,
+                required: true
+            }
+        }, {
+            timestamps: true
+        });
+    </code>
+</pre>                      
+                            <li>The timestamps property in the  options object to the schema gives a timestamp to all the events happneing on the document through this model.</li>
+                            <li>This schema defines the structure of the doucment.</li>          
+                            <li>Model lets us interact with it surrounding the schema.</li>
+                            <li>Just below the schema, a model can be created with a name starting from a Capital letter.</li>
+                        </li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const Blog = mongoose.model("Blog", blogSchema);
+        module.exports = Blog;
+    </code>
+</pre>                      
+                        <li>This finishes up the setting up of the blog schema.</li>
+                        <li>
+                            Getting and saving data
+                            <ul>
+                                <li>First create a new instance of the Blog.</li>
+                                <li>To do that, include blog.js in the main code wth the help of require.</li>
+                                <li>Handle it in a particular request and send data as per the schema as per the code below.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        app.get("/add-blog", (req, res) => {
+            const blog = new Blog({
+                title: My new blog,
+                snippet: "About this new blog",
+                body: "I hope I remember each and every step in the making as its a complicated long process."
+            })
+            
+            blog.save().then((result) => res.send(result)).catch((err) => console.log(err));
+        });
+    </code>
+</pre>
+                            <li>blog.save() saves the document on the database and Mongoose returns an object after saving the blog and sends it back to the browser which is then visible on the page.</li>
+                            <li>Now to get all the documents from the database another get handler can be formed as shown.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        app.get("/all-blogs", (req, res) => {
+            Blog.find().then((result) => {
+                res.send(result);
+            }).catch((err) => console.log(err));
+        });
+    </code>
+</pre>
+                            <li>The difference here is that, save() is used on an instance of the blog and find works on the blog itself.</li>
+                            <li>Find() returns all the documents available, however, we can fetch documents as per the id too as shown below.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        app.get("/single-blog", (req, res) => {
+            Blog.findById("610bdc7259df441bc4397fd7").then((result) => {
+                res.send(result);
+            }).catch((err) => console.log(err));
+        });
+    </code>
+</pre>
+                            <li>The id is an object back at MongoDB but mongoose handles all the conversion between object and string.</li>                         
+                            <li>Next step is to learn how to delete documents and how to ouptut them on views and not as responses to browser requests.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Outputting Docs to Views
+                        <ul>
+                            <li>The sandbox routes that were created are not the way to go. Instead the existing blog routes need their integration.</li>
+                            <li>A new blog route is created which will get all the blog documents from the database.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        app.get("/", (req, res) => {
+            res.redirect('/blogs');
+        });
+        app.get("/blogs", (req, res) => {
+            Blog.find()
+            .then((result) => {
+
+            }).catch((err) => {
+                 
+            })
+        });
+    </code>
+</pre>           
+                            <li>To send the data from database to the view, Blog.find() returns all the documents available as array of objects.</li>                 
+                            <li>The view should expect an object with the properties as per the schema of the blog database.</li>
+                            <li>Everything that needs to be rendered on the view should be in the then part of the above code as it will run when the promise is resolved.</li>
+                            <li>So first of all, the view is rendered, it is given a title and the next thing should be the data received from the blog.</li>
+                            <li>By making an object with the name that the view expects and assigning the result to it does the job as shown.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        app.get("/blogs", (req, res) => {
+            Blog.find().sort({createdAt: -1})
+            .then((result) => {
+                res.render('index', {title: "All blogs", blogs: result})
+            }).catch((err) => {
+                    console.log(err);
+            });
+        });
+    </code>
+</pre>     
+                            <li>Another thing that can be done is adding another method that would sort the blogs in some order.</li>                                  
+                            <li>Sort( {createdAt: -1}) will sort them in the descneding order of their creation timestamps put on Mongoose.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>The blog now communicates with the database and displays the output on the views.</li>
+        </ul>
+    </div>
+</section>
+
+    <script src="assets/script/script.js"></script>
+    <script src="assets/script/prism.js"></script>
+</body>
+</html>

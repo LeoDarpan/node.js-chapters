@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style/style.css">
+    <link rel="stylesheet" href="assets/style/prism.css">
+    <title>Middleware</title>
+</head>
+<body>
+    <section class="main">
+        <div class="lesson-heading">
+            <div class="ch-no"> Chapter 8 </div>
+            <div class="ch-name"> Middleware and Static Files </div>
+        </div>
+        <div class="lesson">
+            <h1>
+                Middleware
+            </h1>
+            <ul>
+                <li>Middleware is that code that runs on the server between getting a request and sending a response.</li>
+                <li>Any type of function that runs between these two operations is a middleware.</li>
+                <li>For example - app.use() or app.get().</li>
+                <li>The order of middleware matters a lot, as after reaching the state of respoding to the browser, it never carries on to the following middleware.</li>
+                <li>
+                    Examples of middleware programs are:
+                    <ul>
+                        <li>Logger middleware to log details of requests</li>
+                        <li>Authentication check middleware for protected routes</li>
+                        <li>Middleware to parse json data for messages.</li>
+                        <li>To return 404 pages.</li>
+                    </ul>
+                </li>
+                <li>Custom middleware can be made to do specific tasks as shown below:</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        app.use((req, res) => {
+            console.log("New request made:");
+            console.log("Host: ", req.hostname);
+            console.log("Path: ", req.path);
+            console.log("Method: ", req.method);
+        });
+    </code>
+</pre>           
+                <li>
+                    Concept of Next:
+                    <ul> 
+                        <li>However, this middleware has a problem as after going through it, Node doesn't go further to run other following middlewares on requests and the browser keeps waiting for the response.</li>
+                        <li>To resolve this issue, a method called "next()" exists.</li>
+                        <li>Next is passed as a third parameter in the callback function taking req and res as parameters and it has to be invoked at the end of the middleware.</li>
+                        <li>This tells Node that the current middleware has finished and now it should move on to the next middlewares.</li>
+                        <li>The code snippet says it all below:</li>
+                    </ul>
+                </li>
+<pre class="language-js">
+    <code class="line-numbers">
+        app.use((req, res, next) => {
+            console.log("New request made:");
+            console.log("Host: ", req.hostname);
+            console.log("Path: ", req.path);
+            console.log("Method: ", req.method);
+            next();
+        });
+    </code>
+</pre>                
+                <li>
+                    Third-party Middleware:
+                    <ul>
+                        <li>Good thing about Node and Express is that there are tons of third party middleware funcitons already available to use.</li>
+                        <li>For example to log things, run cookies, validations, sessions etcetera and middleware for security</li>
+                        <li>Therefore, there is no need to write to the middleware from the scratch, if its already made, just install it using NPM.</li>
+                        <li>In the code below, a third party middleware called Morgan can be seen in action.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        // Adding Morgan
+        const morgan = require("morgan");
+        
+        //Listen to requests on Port: 3000, Localhost
+        app.listen(3000);
+
+        //Using Morgan
+        app.use(morgan('dev'));
+
+        console.log("Another variant of morgan: ");
+
+        app.use(morgan("tiny"));
+    </code>
+</pre>  
+                    </ul>                
+                </li>
+                <li>There are plenty of third-party middleware, most important of them all is the one needed to send static files to the app.</li>                        
+            </ul>
+        </div>
+    </section>
+
+    <script src="assets/script/script.js"></script>
+    <script src="assets/script/prism.js"></script>
+</body>
+</html>

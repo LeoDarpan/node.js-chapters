@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style/style.css">
+    <link rel="stylesheet" href="assets/style/prism.css">
+    <title>Router and MVC</title>
+</head>
+<body>
+    <section class="main">
+        <div class="lesson-heading">
+            <div class="ch-no"> Chapter 11 </div>
+            <div class="ch-name"> Router and MVC </div>
+        </div>
+        <div class="lesson">
+            <h1>
+                Router and MVC
+            </h1>
+            <ul>
+                <li>
+                    Routing
+                    <ul>
+                        <li>To lighten and heavy code and make it look neater, routes can be separated into a different file.</li>
+                        <li>Express allows making a separate router file.</li>
+                        <li>When the size of the project grows with many different routes, management becomes easier.</li>
+                        <li>One big messy file can be avoided.</li>
+                        <li>In this part, we make a new folder called "routes", with a new file called "blogRoutes"</li>
+                        <li>To use router functionality like this, the file should have express and should an instance of router running.</li>
+                        <li>At the end of the file, the routing object should be exported also.</li>
+                        <li>The file should be imported to the app file using require function.</li>
+                        <li>To use blogRoutes in the app, we can use the "use" funciton of the node just like using any middleware.</li>
+                        <li>The routes can be scoped using router like this too.</li>        
+                    </ul>
+                </li>
+                <li>
+                    MVC
+                    <ul>
+                        <li>MVC stands for Model, View and Controller</li>
+                        <li>it is a way of structuring code and files</li>
+                        <li>It keeps code modular, reusable and easier to read.</li>
+                        <li>Model and View is already covered, controller which is the middle man betweeen the former too will be covered now.</li>
+                        <li>Controller files contains functions to magage the tasks that involve model and views.</li>
+                        <li>In this project, all the route handler functions are extracted into  a separate controller file.</li>
+                        <li>A separate controllers folder is created.</li>
+                        <li>It will have all the functions for all the different type of operations that are done on the blogs.</li>
+                        <li>This makes the app much more handleable because of modularity and future mods can be easily done.</li>
+                    </ul>
+                </li> 
+            </ul>
+    </div>
+</section>
+
+    <script src="assets/script/script.js"></script>
+    <script src="assets/script/prism.js"></script>
+</body>
+</html>

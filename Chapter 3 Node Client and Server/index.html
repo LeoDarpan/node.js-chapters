@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style/style.css">
+    <link rel="stylesheet" href="assets/style/prism.css">
+    <title>Node.js Client and Server</title>
+</head>
+<body>
+    <section class="main">
+        <div class="lesson-heading">
+            <div class="ch-no"> Chapter 3 </div>
+            <div class="ch-name"> Node.js Client and Server </div>
+        </div>
+        <div class="lesson">
+            <h1>
+                Clients and Server
+            </h1>
+            <ul>
+                <li>Browsers sends requests to servers</li>
+                <li>IP addresses are uniqueand browsers always connect to IP addresses maintained by various DNS</li>
+                <li>Browsers requests HTTP from domains and gets back responses which are again in HTTP.</li>
+                <li>HTTP governs all the communication.</li>
+                <li>
+                    How to make Node a server.
+                    <ul>
+                        <li>The following code creates a server and makes it actively listen for requests.</li>
+                        <pre class="language-js">
+                            <code class="line-numbers">
+const http = require("http");
+
+const server = http.createServer((req, res) => {
+    console.log("Request made!");
+});
+
+server.listen(3000, 'localhost', () => {
+    console.log("Listening for requests on port 3000!");
+});
+                            </code>
+                        </pre>
+                        <li>This marks the successful creation of a server. After running this code, if you go to the browser and try to access localhost:3000, you will see Request made! into the terminal.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <script src="assets/script/script.js"></script>
+    <script src="assets/script/prism.js"></script>
+</body>
+</html>

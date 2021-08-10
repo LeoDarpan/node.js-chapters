@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style/style.css">
+    <link rel="stylesheet" href="assets/style/prism.css">
+    <title>Node.js Requests and Responses</title>
+</head>
+<body>
+    <section class="main">
+        <div class="lesson-heading">
+            <div class="ch-no"> Chapter 4 </div>
+            <div class="ch-name"> Node.js Requests and Responses </div>
+        </div>
+        <div class="lesson">
+            <h1>
+                Requests and Responses
+            </h1>
+            <ul>
+                <li>Browsers sends requests to servers</li>
+                <li>
+                    Whenever a request is made, a request object is created.
+                </li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const server = http.createServer((req, res) => {
+        console.log(req);
+        });
+    </code>
+</pre>
+                <li>If the req object is looged into the console, it shows a massive information about the request made.</li>
+                <li>This can be used to advantage as it can tell  us the url the request came from and can help the developers direct a specific responses.</li>
+                <li>The following line of code logs the url and the type of request made.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        const server = http.createServer((req, res) => {
+            console.log(req.url, req.method);
+        });            
+    </code>
+</pre>
+                <li>That's all important to learn about requests!</li>
+                <li>Talking about responses. Different type of response object can be sent back as per the requests.</li>
+                <li>It can send back text, html, css, js or any kind of data.</li>
+                <li>To send back respose, a response-header is used to specify the type of data being served!</li>
+                <li>To write the data, write method is used as shown below</li>
+                <li>After writing everything, end() method is necessary to close the response.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        res.setHeader('Content-Type', 'text/plain');
+        res.write("Hello world!");
+        res.end();
+    </code>
+</pre>
+                <li>To send back html, just change plain to html and write as many lines as you want.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        res.setHeader('Content-Type', 'text/html');
+        res.write("<h1>Hello world!</h1>>");
+        res.write("<p>This is the capability of Node.js. This is the true <strong>server</strong> capability!</p>>");
+        res.end();
+    </code>
+</pre>
+                <li>The complete pages comprising of Header and footer and hero and what not, can be sent like this on request and different pages can be sent as the request url! <strong>AMAZING!</strong></li>
+<pre class="language-js">
+    <code class="line-numbers">
+        res.setHeader('Content-Type', 'text/html');
+        fs.readFile("../../new-page.html", (err, data) => {
+            if(err){
+                console.log(err);
+                res.end();
+            }else{
+                res.write(data);
+                res.end();
+            }
+        });
+
+    </code>
+</pre>
+                <li>The next thing to do is the send back pages as per the url requested!</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        res.setHeader('Content-Type', 'text/html');
+
+        let path = "../../";
+
+        if(req.url == '/'){
+            path += "index.html";
+        }else if(req.url == "/about"){
+            path += "about.html";
+        }else{
+            path += "404.html";
+        }
+
+        fs.readFile(path, (err, data) => {
+            if(err){
+                console.log(err);
+                res.end();
+            }else{
+                res.write(data);
+                res.end();
+            }
+        });
+    </code>
+</pre>
+                <li>The responses can also be paired with status codes for further clarity on the client side in case there is any error!</li>
+                <li>
+                    The most commonly used status codes are
+                    <ul>
+                        <li>200: Ok</li>
+                        <li>301: Resource moved</li>
+                        <li>404: Not found</li>
+                        <li>501: Internal server error</li>
+                    </ul>
+                </li>
+                <li>
+                    Basically the codes come in five ranges as described,
+                    <ul>
+                        <li>100 Range - Informational responses</li>
+                        <li>200 Range - success codes</li>
+                        <li>300 Range - code for redirects</li>
+                        <li>400 Range - user or client error codes</li>
+                        <li>500 Range - server error codes</li>
+                    </ul>
+                </li>
+                <li>These codes can be paired with responses to be sent to the browser!</li>>
+                <li>Another powerful feature of a server is to redirect the browser to a page specifically under certain conditions!</li>
+                <li>Consider the following example very carefully!</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        else if(req.url == "/about-me"){
+            res.statusCode = 301;
+            res.setHeader('location', '../../about.html');
+        }        
+    </code>
+</pre>
+<pre class="language-js">
+    <code class="line-numbers">
+
+    </code>
+</pre>
+            </ul>
+        </div>
+    </section>
+
+    <script src="assets/script/script.js"></script>
+    <script src="assets/script/prism.js"></script>
+</body>
+</html>

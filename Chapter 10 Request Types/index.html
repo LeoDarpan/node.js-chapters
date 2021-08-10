@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/style/style.css">
+    <link rel="stylesheet" href="assets/style/prism.css">
+    <title>Types of Requests</title>
+</head>
+<body>
+    <section class="main">
+        <div class="lesson-heading">
+            <div class="ch-no"> Chapter 10 </div>
+            <div class="ch-name"> Request Types </div>
+        </div>
+        <div class="lesson">
+            <h1>
+                Types of requests
+            </h1>
+            <ul>
+                <li>There are four types of requsts, so far I have only dealt with get request.</li>
+                <li>
+                    Types
+                    <ul>
+                        <li>Get - To get a response</li>
+                        <li>POST - To create new data</li>
+                        <li>DELETE - To delete data</li>
+                        <li>PUT - To update data</li>
+                    </ul>
+                </li>
+                <li>The same route can be used to handle different requests because they are handled differently by the server.</li>
+                <li>The following figure show the different routes for different requests.</li>
+                <figure style="display: flex; justify-content: center; flex-direction: column; align-items: center;  margin-bottom: 20px;">
+                    <img src="assets/images/routes.png" alt="route" width="100%">
+                    <figcaption style="width: 100%; background: white; color: black; text-align: center; padding: 10px 0px;">Routes for different requests.</figcaption>
+                </figure>
+                <li>To create a new blog we go to the view and fill the form and hit submit.</li>
+                <li>This fires a post request which goes to node.js.</li>
+                <li>The app should then communicate with MongoDb, make a new document and add the fields filled on the page to the document and save the blog successfully.</li>
+                <li>All of this should happen when the user hits the submit button.</li>
+                <li>This can be done from the form itself.</li>
+                <li>Inside the form tag, an action attribute is added with the url.</li>
+                <li>Another attribute should be method specifying the type of request.</li>
+                <li>To bind the data to the request, a name attribute should be added to the inputs of the form.</li>
+                <li>When the server would access the data, it will see the name attribute and access it.</li>
+                <li>That's all that is needed to be done on the form.</li>
+                <li>Next thing to do is to create a handler on the server side.</li>
+                <li>To post the data successfully as per the fields in the schema, it needs to be in the form of an object on submission.</li>
+                <li>A middleware called urlencoded does the job for us.</li>
+                <li>Its this middleware only that provides the data readily as the object for the document.</li>
+                <li>To get a particular blog document or to delete a particular one, we need to understand route parameters.</li>
+                <li>
+                    Route Parameters
+                    <ul>
+                        <li>The variable parts of the route thay may change value are parameters</li>
+                        <li>To handle the parameter request, a new get request handler is made as shown below.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        app.get("/blogs/:id", (req, res) => {
+            const id = req.params.id;
+            Blog.findById(id)
+            .then(result => {
+                res.render('details', {blog: result, title: "Blog details"})
+            })
+            .catch(err => console.log(err));
+        });
+    </code>
+</pre>     
+                        <li>This handler renders a new view for the document everytime a blog is requested.</li>                   
+                        <li>Next thing is to learn to delete a particular document as per the parameter.</li>
+                        <li>Again that can be done easily with the help of id.</li>
+                        <li>However, the request is gonna go from the button or a link so, it needs to be handled by JS running on the browser and not the server.</li>
+                        <li>The object cannot be directly passed into the JS so it is passed through the dataset of the link that deletes the blog.</li>
+<pre class="language-js">
+    <code class="line-numbers">
+        ----HTML Part for Delete------
+        <a class="delete" data-doc="<%= blog._id %>">Delete</a>
+        --------JS Part-----------
+        const trashcan = document.querySelector("a.delete");
+
+        trashcan.addEventListener("click", (e) => {
+            const endpoint = `/blogs/${trashcan.dataset.doc)`;
+            fetch(endpoint, {
+                method: "DELETE"
+            })
+            .then((response) => response.json())
+            .then((data) => console.log(data))
+            .catch(err => console.log(err));      
+        });
+
+        ----------Node.js Part------------
+        app.delete("/blogs/:id", (req, res) => {
+            const id = req.params.id;
+        
+            Blog.findByIdAndDelete(id)
+            .then(result => {
+                res.json({redirect: '/blogs'})
+            })
+            .catch(err => console.log(err));
+        });
+    </code>
+</pre>
+                        <li>The request above being sent by Fetch api is the AJAX request which sends back JSON data.</li>
+                        <li>Thus on getting response we are not redirecting it to other route because node doesn't accept it apart from JSON data.</li>
+                    </ul>
+                </li>
+            </ul>
+           
+    </div>
+</section>
+
+    <script src="assets/script/script.js"></script>
+    <script src="assets/script/prism.js"></script>
+</body>
+</html>
